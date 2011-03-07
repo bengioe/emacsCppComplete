@@ -9,22 +9,14 @@ import traceback
 #matches a.b.c->d
 #         ^ ^ <>
 _re_conn = re.compile("(\.|->)")
-#matches Class var (...)
-#        <typ> <vn>
-_re_def  = re.compile("(?P<nspace>[a-zA-Z0-9\_]+::){0,1}(?P<type>[a-zA-Z0-9\*\[\]\_]+)\s+(?P<vn>[a-zA-Z0-9\_]+)\(*.*\)*;")
-#matches nested parentheses (asd,qwe(),zxc(jkl()))
-#                           <                    >
-#doesnt work... _re_nested_par = re.compile("(\((?>[^()]+|(?1))*\))")
-_re_class_ns = re.compile("(?P<cname>[a-zA-Z0-9_]+)::[a-zA-Z0-9_]+\(.*\)[{]{0,1}")
-#puts in a group the last word b4 "junk"
-#e.g. "foo(bar"
-#          < >
-#_re_last_word = re.compile(".*(?P<w>[a-zA-Z0-9\_]+)$")
-_re_last_word = re.compile("[^a-zA-Z0-9\_]*(?P<w>[a-zA-Z0-9\_]+)")
 
+#matches a "namespace definition", if I may say so
 _re_namespace = re.compile("namespace\W+(?P<nspace>[a-zA-Z0-9]+)\W*")
 
 def parse_lemacs(path):
+    """
+    parse a .lemacs file and grab the information within
+    """
     data = file(path,'r').read()
     r = {'include':[]}
     current_class = ""
@@ -45,6 +37,9 @@ def parse_lemacs(path):
     return r
 
 def update_state():
+    """
+    Updates the current state by looking for included files and parsing them
+    """
     lisp.message("Loading... this might take a while.")
     this_text = lisp.buffer_string()
     cwd = os.path.dirname(lisp.buffer_file_name())
@@ -112,6 +107,9 @@ def try_cn_match(l,var):
         cnames.append(cname.replace("const","").replace("*","").replace("&","").strip())
     return cnames
 def make_help_message(completions,help_str=""):
+    """
+    makes a "help message" from a list of CppObject's 
+    """
     slist = []
     for i in completions:
         slist.append(i.prettynames())# (attr,name,type)
@@ -126,6 +124,9 @@ def make_help_message(completions,help_str=""):
     return help_str+"\n".join(hlist)
 
 def check_word():
+    """
+    Check the current word and try to push a help message and a completion
+    """
     line = lisp.buffer_substring(lisp.line_beginning_position(),lisp.point())
     lines= lisp.buffer_substring(1,lisp.point()).splitlines()
     lines.reverse()
@@ -149,6 +150,9 @@ def check_word():
         lisp.message(d[1])
 
 def find_completion(line,buffer_lines):
+    """
+    the big function, returns a list of completions, or an error message ;)
+    """
     word = line
     # split "a.b->c"
     words = [i.strip() for i in _re_conn.split(word) if i not in ['','.','->']]
@@ -266,6 +270,9 @@ def find_completion(line,buffer_lines):
 check_word.interaction = ''
 
 def complete_type():
+    """
+    UI attempt to grab completions for a class
+    """
     c = lisp.completing_read("Type to complete:",cpp.CppObject.classes)
     lisp.message("Looking for:"+str(c))    
     try:
