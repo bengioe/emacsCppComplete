@@ -14,13 +14,13 @@ Install
 Clone this repository, and put 'emacsCppComplete/' somewhere in your PYTHONPATH.
 
 Then add something like this in your .emacs:
-`
-(require 'pos-tip)
-(pymacs-load "emacsCppComplete")
-(global-set-key (kbd "M-p M-m") 'emacsCppComplete-check-word)
-(global-set-key (kbd "M-p M-u") 'emacsCppComplete-update-state)
-(global-set-key (kbd "M-p M-o") 'emacsCppComplete-command)
-(global-set-key (kbd "M-p M-l") 'emacsCppComplete-complete-type)`
+
+    (require 'pos-tip)
+    (pymacs-load "emacsCppComplete")
+    (global-set-key (kbd "M-p M-m") 'emacsCppComplete-check-word)
+    (global-set-key (kbd "M-p M-u") 'emacsCppComplete-update-state)
+    (global-set-key (kbd "M-p M-o") 'emacsCppComplete-command)
+    (global-set-key (kbd "M-p M-l") 'emacsCppComplete-complete-type)
 
 
 Usage
@@ -32,11 +32,11 @@ You can also directly find all completions for a type by using the complete_type
 .lemacs 
 -------
 .lemacs files are little hacks to add some include directories. When parsing your c++ file, emacsCppComplete will look for `.lemacs` file in parent directories and use the info there to enchance the completion. For example, and only feature for now, is to give paths to the program, which will add them in gcc as include paths(-I).
-Example .lemacs:`
-  [include]
-  ./Math/publicInterfaces
-  ./Raytracer/publicInterfaces
-  ./Objects/publicInterfaces
-  ./Image/publicInterfaces`
+Example .lemacs:
+    [include]
+    ./Math/publicInterfaces
+    ./Raytracer/publicInterfaces
+    ./Objects/publicInterfaces
+    ./Image/publicInterfaces
 
 It might be a good idea to change the name of this file... 
